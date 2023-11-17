@@ -8,8 +8,6 @@ import com.amazonaws.services.lambda.runtime.events.SQSEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Map;
-
 public class EventServiceHandler implements RequestHandler<SQSEvent, SQSBatchResponse> {
 
     private static final Logger logger = LoggerFactory.getLogger(EventServiceHandler.class);
