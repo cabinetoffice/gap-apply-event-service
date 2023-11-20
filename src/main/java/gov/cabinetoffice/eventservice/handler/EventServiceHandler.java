@@ -15,6 +15,7 @@ public class EventServiceHandler implements RequestHandler<SQSEvent, SQSBatchRes
 
     @Override
     public SQSBatchResponse handleRequest(final SQSEvent event, final Context context) {
+        System.out.println("In handler");
         try {
             logger.info("Hello World! Message Body : {}", event.getRecords().get(0).getBody());
         }
