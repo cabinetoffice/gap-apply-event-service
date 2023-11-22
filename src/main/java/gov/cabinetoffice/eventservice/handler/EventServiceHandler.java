@@ -6,6 +6,8 @@ import com.amazonaws.services.lambda.runtime.events.SQSEvent;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import gov.cabinetoffice.eventservice.exceptions.JsonException;
+import gov.cabinetoffice.eventservice.exceptions.MessageProcessingException;
 import gov.cabinetoffice.eventservice.service.EventLogService;
 import gov.cabinetoffice.shared.entity.EventLog;
 import lombok.RequiredArgsConstructor;
@@ -31,14 +33,14 @@ public class EventServiceHandler implements RequestHandler<SQSEvent, Void> {
                  try {
                      eventLogService.save(objectMapper.readValue(record.getBody(), EventLog.class));
                  } catch (JsonProcessingException e) {
-                     throw new RuntimeException(e);
+                     throw new JsonException(e.getMessage());
                  }
              });
 
         }
         catch (Exception e) {
             logger.error("Could not process message", e);
-            throw new RuntimeException(e);
+            throw new MessageProcessingException("Could not process message : " + message.toString());
         }
 
         return null;
