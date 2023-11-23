@@ -17,9 +17,7 @@ import java.time.Instant;
 @Repository
 public class EventLogRepository {
 
-
-    @Value("${database.schema}")
-    private String schema;
+    private final String schema;
 
     private final SecretsManagerService secretsManagerService;
 
@@ -79,7 +77,7 @@ public class EventLogRepository {
                 .append("jdbc:postgresql://").append(secretsManagerService.getDatabaseCredentialsSecret().getHost())
                 .append(":").append(secretsManagerService.getDatabaseCredentialsSecret().getPort())
                 .append("/").append(secretsManagerService.getDatabaseCredentialsSecret().getDbname())
-                .append("?currentSchema=").append(schema)
+                .append("?currentSchema=event_stream")
                 .toString();
     }
 
