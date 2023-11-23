@@ -1,11 +1,14 @@
 package gov.cabinetoffice.shared.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import org.springframework.context.annotation.Bean;
+import lombok.NoArgsConstructor;
 
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class DatabaseCredentialsSecret {
 
     private String username;
