@@ -1,12 +1,12 @@
 package gov.cabinetoffice.shared.repository;
 
 import gov.cabinetoffice.eventservice.exceptions.DatabaseConnectionException;
+import gov.cabinetoffice.eventservice.exceptions.DatabaseQueryException;
 import gov.cabinetoffice.eventservice.service.SecretsManagerService;
 import gov.cabinetoffice.shared.entity.EventLog;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
@@ -16,8 +16,6 @@ import java.time.Instant;
 @Slf4j
 @Repository
 public class EventLogRepository {
-
-    private final String schema;
 
     private final SecretsManagerService secretsManagerService;
 
@@ -29,8 +27,7 @@ public class EventLogRepository {
             "\t id, user_sub, funding_organisation_id, session_id, event_type, object_id, object_type, time_stamp, created)\n" +
             "\t VALUES (nextval('EVENT_LOG_ID_SEQ'), ?, ?, ?, ?, ?, ?, ?, ?);";
 
-    public EventLogRepository(String schema, SecretsManagerService secretsManagerService, Clock clock) {
-        this.schema = schema;
+    public EventLogRepository(SecretsManagerService secretsManagerService, Clock clock) {
         this.secretsManagerService = secretsManagerService;
         this.clock = clock;
     }
@@ -61,7 +58,8 @@ public class EventLogRepository {
             insertStatement.executeUpdate();
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            logger.error(e.getMessage());
+            throw new DatabaseQueryException(e.getMessage());
         }
 
     }

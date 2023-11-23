@@ -4,6 +4,7 @@ import com.amazonaws.services.secretsmanager.AWSSecretsManager;
 import com.amazonaws.services.secretsmanager.model.GetSecretValueRequest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import gov.cabinetoffice.eventservice.exceptions.JsonException;
 import gov.cabinetoffice.shared.dto.DatabaseCredentialsSecret;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -52,8 +53,9 @@ public class SecretsManagerService {
                 retrievedSecretValue = objectMapper.readValue(secretString, DatabaseCredentialsSecret.class);
             } catch (SecretsManagerException e) {
                 logger.error(e.awsErrorDetails().errorMessage());
+                throw e;
             } catch (JsonProcessingException e) {
-                throw new RuntimeException(e);
+                throw new JsonException(e.getMessage());
             }
         }
     }

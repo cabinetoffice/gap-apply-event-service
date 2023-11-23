@@ -3,7 +3,6 @@ package gov.cabinetoffice.eventservice.handler;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.lambda.runtime.events.SQSEvent;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.cabinetoffice.ObjectMapperConfig;
@@ -30,13 +29,15 @@ public class EventServiceHandler implements RequestHandler<SQSEvent, Void> {
     private final EventLogRepository eventLogRepository;
     private final EventLogService eventLogService;
     private final ObjectMapper objectMapper;
-    private final Clock clock = Clock.systemUTC();
+    private final Clock clock;
 
-    public EventServiceHandler() {
+    public EventServiceHandler () {
+        clock = Clock.systemUTC();
         objectMapper = new ObjectMapperConfig().getObjectMapper();
         secretsManagerService = new SecretsManagerService(System.getenv("DB_CREDS_SECRET_ARN"), SecretsManagerConfig.getAwsSecretsManager(), objectMapper);
-        eventLogRepository = new EventLogRepository(System.getProperty("database.schema"), secretsManagerService, clock);
+        eventLogRepository = new EventLogRepository(secretsManagerService, clock);
         eventLogService = new EventLogService(eventLogRepository);
+
     }
 
     @Override
