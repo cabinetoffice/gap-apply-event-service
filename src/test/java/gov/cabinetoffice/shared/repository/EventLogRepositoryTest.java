@@ -54,7 +54,7 @@ class EventLogRepositoryTest {
         @Test
         void successfulQuery() throws SQLException {
             EventLog expectedEventLog = EventLog.builder()
-                    .objectId(1L)
+                    .objectId("1")
                     .eventType(EventType.ADVERT_CREATED)
                     .fundingOrganisationId(2L)
                     .userSub("USER_SUB")
@@ -92,7 +92,7 @@ class EventLogRepositoryTest {
             verify(mockedPreparedStatement).setLong(eq(2), eq(expectedEventLog.getFundingOrganisationId()));
             verify(mockedPreparedStatement).setString(eq(3), eq(expectedEventLog.getSessionId()));
             verify(mockedPreparedStatement).setString(eq(4), eq(expectedEventLog.getEventType().toString()));
-            verify(mockedPreparedStatement).setLong(eq(5), eq(expectedEventLog.getObjectId()));
+            verify(mockedPreparedStatement).setString(eq(5), eq(expectedEventLog.getObjectId()));
             verify(mockedPreparedStatement).setString(eq(6), eq(expectedEventLog.getObjectType().toString()));
             verify(mockedPreparedStatement).setTimestamp(eq(7), eq(Timestamp.from(expectedEventLog.getTimestamp())));
             verify(mockedPreparedStatement).setTimestamp(eq(8), eq(Timestamp.from(Instant.now(clock))));
@@ -105,7 +105,7 @@ class EventLogRepositoryTest {
         @Test
         void cannotConnectToDatabase() throws SQLException {
             EventLog expectedEventLog = EventLog.builder()
-                    .objectId(1L)
+                    .objectId("1")
                     .eventType(EventType.ADVERT_CREATED)
                     .fundingOrganisationId(2L)
                     .userSub("USER_SUB")
@@ -143,7 +143,7 @@ class EventLogRepositoryTest {
         @Test
         void queryFails() throws SQLException {
             EventLog expectedEventLog = EventLog.builder()
-                    .objectId(1L)
+                    .objectId("1")
                     .eventType(EventType.ADVERT_CREATED)
                     .fundingOrganisationId(2L)
                     .userSub("USER_SUB")
@@ -183,7 +183,7 @@ class EventLogRepositoryTest {
             verify(mockedPreparedStatement).setLong(eq(2), eq(expectedEventLog.getFundingOrganisationId()));
             verify(mockedPreparedStatement).setString(eq(3), eq(expectedEventLog.getSessionId()));
             verify(mockedPreparedStatement).setString(eq(4), eq(expectedEventLog.getEventType().toString()));
-            verify(mockedPreparedStatement).setLong(eq(5), eq(expectedEventLog.getObjectId()));
+            verify(mockedPreparedStatement).setString(eq(5), eq(expectedEventLog.getObjectId()));
             verify(mockedPreparedStatement).setString(eq(6), eq(expectedEventLog.getObjectType().toString()));
             verify(mockedPreparedStatement).setTimestamp(eq(7), eq(Timestamp.from(expectedEventLog.getTimestamp())));
             verify(mockedPreparedStatement).setTimestamp(eq(8), eq(Timestamp.from(Instant.now(clock))));

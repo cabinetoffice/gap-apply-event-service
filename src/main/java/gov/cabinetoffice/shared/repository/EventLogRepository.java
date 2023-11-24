@@ -49,7 +49,7 @@ public class EventLogRepository {
             insertStatement.setLong(2, eventLog.getFundingOrganisationId());
             insertStatement.setString(3, eventLog.getSessionId());
             insertStatement.setString(4, eventLog.getEventType().toString());
-            insertStatement.setLong(5, eventLog.getObjectId());
+            insertStatement.setString(5, eventLog.getObjectId());
             insertStatement.setString(6, eventLog.getObjectType().toString());
             insertStatement.setTimestamp(7, Timestamp.from(eventLog.getTimestamp()));
             insertStatement.setTimestamp(8, Timestamp.from(Instant.now(clock)));

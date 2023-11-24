@@ -63,7 +63,7 @@ class EventServiceHandlerTest {
         void successful_request() throws JsonProcessingException {
 
             EventLog incomingEventLog = EventLog.builder()
-                    .objectId(1L)
+                    .objectId("1")
                     .eventType(EventType.ADVERT_CREATED)
                     .fundingOrganisationId(2L)
                     .userSub("USER_SUB")
@@ -99,7 +99,7 @@ class EventServiceHandlerTest {
         void eventLogServiceThrowsException() throws JsonProcessingException {
 
             EventLog incomingEventLog = EventLog.builder()
-                    .objectId(1L)
+                    .objectId("1")
                     .eventType(EventType.ADVERT_CREATED)
                     .fundingOrganisationId(2L)
                     .userSub("USER_SUB")
@@ -130,7 +130,7 @@ class EventServiceHandlerTest {
             eventServiceHandler = new EventServiceHandler(secretsManagerService, eventLogRepository, eventLogService, mockedObjectMapper, clock);
 
             EventLog incomingEventLog = EventLog.builder()
-                    .objectId(1L)
+                    .objectId("1")
                     .eventType(EventType.ADVERT_CREATED)
                     .fundingOrganisationId(2L)
                     .userSub("USER_SUB")

@@ -22,7 +22,7 @@ import java.time.Instant;
 import java.util.List;
 
 /**
- * This clas exists just to test locally.
+ * This class exists just to test locally.
  * You'll need to set the following as env variables before running:
  *
  * DB_CREDS_SECRET_ARN=[secret arn for sandbox db creds]
@@ -38,7 +38,7 @@ class EventServiceHandlerIntegrationTest {
     private EventServiceHandler handler;
     private ObjectMapper objectMapper;
 
-    //@BeforeEach
+    @BeforeEach
     void setUp() {
         objectMapper = new ObjectMapperConfig().getObjectMapper();
         handler = new EventServiceHandler();
@@ -48,7 +48,7 @@ class EventServiceHandlerIntegrationTest {
     //@Test
     void handleRequest() throws JsonProcessingException {
         EventLog incomingEventLog = EventLog.builder()
-                .objectId(1L)
+                .objectId("1")
                 .eventType(EventType.ADVERT_CREATED)
                 .fundingOrganisationId(2L)
                 .userSub("USER_SUB")
