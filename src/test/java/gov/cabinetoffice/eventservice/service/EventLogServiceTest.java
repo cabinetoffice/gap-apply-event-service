@@ -38,7 +38,7 @@ class EventLogServiceTest {
         EventLog expectedEventLog = EventLog.builder()
                 .userSub("USER_SUB")
                 .sessionId("SESSION_ID")
-                .objectId(1L)
+                .objectId("1")
                 .objectType(ObjectType.ADVERT)
                 .eventType(EventType.ADVERT_CREATED)
                 .fundingOrganisationId(0L)

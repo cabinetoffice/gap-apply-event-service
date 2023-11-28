@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Bean;
 public class SecretsManagerConfig {
 
     @Bean
-    public static AWSSecretsManager getAwsSecretsManager(){
+    public static AWSSecretsManager getAwsSecretsManager() {
         return AWSSecretsManagerClientBuilder.standard()
                 .withRegion("eu-west-2")
                 .build();
