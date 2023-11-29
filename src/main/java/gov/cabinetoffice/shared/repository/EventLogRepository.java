@@ -46,7 +46,7 @@ public class EventLogRepository {
             PreparedStatement insertStatement = conn.prepareStatement(INSERT_EVENT_LOG);
 
             insertStatement.setString(1, eventLog.getUserSub());
-            insertStatement.setLong(2, eventLog.getFundingOrganisationId());
+            insertStatement.setObject(2, eventLog.getFundingOrganisationId());
             insertStatement.setString(3, eventLog.getSessionId());
             insertStatement.setString(4, eventLog.getEventType().toString());
             insertStatement.setString(5, eventLog.getObjectId());

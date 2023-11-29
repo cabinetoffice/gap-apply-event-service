@@ -89,7 +89,7 @@ class EventLogRepositoryTest {
 
             //verifying query params are all correct and in the right position
             verify(mockedPreparedStatement).setString(eq(1), eq(expectedEventLog.getUserSub()));
-            verify(mockedPreparedStatement).setLong(eq(2), eq(expectedEventLog.getFundingOrganisationId()));
+            verify(mockedPreparedStatement).setObject(eq(2), eq(expectedEventLog.getFundingOrganisationId()));
             verify(mockedPreparedStatement).setString(eq(3), eq(expectedEventLog.getSessionId()));
             verify(mockedPreparedStatement).setString(eq(4), eq(expectedEventLog.getEventType().toString()));
             verify(mockedPreparedStatement).setString(eq(5), eq(expectedEventLog.getObjectId()));
@@ -180,7 +180,7 @@ class EventLogRepositoryTest {
 
             //verifying query params are all correct and in the right position
             verify(mockedPreparedStatement).setString(eq(1), eq(expectedEventLog.getUserSub()));
-            verify(mockedPreparedStatement).setLong(eq(2), eq(expectedEventLog.getFundingOrganisationId()));
+            verify(mockedPreparedStatement).setObject(eq(2), eq(expectedEventLog.getFundingOrganisationId()));
             verify(mockedPreparedStatement).setString(eq(3), eq(expectedEventLog.getSessionId()));
             verify(mockedPreparedStatement).setString(eq(4), eq(expectedEventLog.getEventType().toString()));
             verify(mockedPreparedStatement).setString(eq(5), eq(expectedEventLog.getObjectId()));

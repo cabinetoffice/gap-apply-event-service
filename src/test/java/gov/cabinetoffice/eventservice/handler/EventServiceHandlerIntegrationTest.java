@@ -4,20 +4,13 @@ import com.amazonaws.services.lambda.runtime.events.SQSEvent;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.cabinetoffice.ObjectMapperConfig;
-import gov.cabinetoffice.eventservice.config.SecretsManagerConfig;
-import gov.cabinetoffice.eventservice.service.EventLogService;
-import gov.cabinetoffice.eventservice.service.SecretsManagerService;
 import gov.cabinetoffice.shared.entity.EventLog;
 import gov.cabinetoffice.shared.enums.EventType;
 import gov.cabinetoffice.shared.enums.ObjectType;
-import gov.cabinetoffice.shared.repository.EventLogRepository;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.Clock;
 import java.time.Instant;
 import java.util.List;
 
@@ -42,7 +35,6 @@ class EventServiceHandlerIntegrationTest {
     void setUp() {
         objectMapper = new ObjectMapperConfig().getObjectMapper();
         handler = new EventServiceHandler();
-
     }
 
     //@Test
