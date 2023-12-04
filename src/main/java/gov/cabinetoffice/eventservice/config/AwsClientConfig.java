@@ -15,7 +15,6 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "aws")
 public class AwsClientConfig {
 
-
 	private String secretKey;
 
 	private String accessKeyId;
