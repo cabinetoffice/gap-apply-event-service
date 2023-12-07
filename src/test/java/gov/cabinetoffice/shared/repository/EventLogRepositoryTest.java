@@ -1,10 +1,10 @@
 package gov.cabinetoffice.shared.repository;
 
-import gov.cabinetoffice.eventservice.exceptions.DatabaseConnectionException;
-import gov.cabinetoffice.eventservice.exceptions.DatabaseQueryException;
+import gov.cabinetoffice.shared.exceptions.DatabaseConnectionException;
+import gov.cabinetoffice.shared.exceptions.DatabaseQueryException;
 import gov.cabinetoffice.eventservice.service.SecretsManagerService;
 import gov.cabinetoffice.shared.dto.DatabaseCredentialsSecret;
-import gov.cabinetoffice.shared.entity.EventLog;
+import gov.cabinetoffice.shared.dto.EventLogDto;
 import gov.cabinetoffice.shared.enums.EventType;
 import gov.cabinetoffice.shared.enums.ObjectType;
 import org.junit.jupiter.api.*;
@@ -53,7 +53,7 @@ class EventLogRepositoryTest {
 
         @Test
         void successfulQuery() throws SQLException {
-            EventLog expectedEventLog = EventLog.builder()
+            EventLogDto expectedEventLog = EventLogDto.builder()
                     .objectId("1")
                     .eventType(EventType.ADVERT_CREATED)
                     .fundingOrganisationId(2L)
@@ -85,7 +85,7 @@ class EventLogRepositoryTest {
             when(mockedConnection.isValid(0)).thenReturn(true);
             when(mockedConnection.prepareStatement(anyString())).thenReturn(mockedPreparedStatement);
 
-            eventLogRepository.save(expectedEventLog);
+            eventLogRepository.saveNewEventLog(expectedEventLog);
 
             //verifying query params are all correct and in the right position
             verify(mockedPreparedStatement).setString(eq(1), eq(expectedEventLog.getUserSub()));
@@ -104,7 +104,7 @@ class EventLogRepositoryTest {
 
         @Test
         void cannotConnectToDatabase() throws SQLException {
-            EventLog expectedEventLog = EventLog.builder()
+            EventLogDto expectedEventLog = EventLogDto.builder()
                     .objectId("1")
                     .eventType(EventType.ADVERT_CREATED)
                     .fundingOrganisationId(2L)
@@ -135,14 +135,14 @@ class EventLogRepositoryTest {
 
             when(mockedConnection.isValid(0)).thenReturn(false);
 
-            assertThrows(DatabaseConnectionException.class, () -> eventLogRepository.save(expectedEventLog));
+            assertThrows(DatabaseConnectionException.class, () -> eventLogRepository.saveNewEventLog(expectedEventLog));
         }
 
 
 
         @Test
         void queryFails() throws SQLException {
-            EventLog expectedEventLog = EventLog.builder()
+            EventLogDto expectedEventLog = EventLogDto.builder()
                     .objectId("1")
                     .eventType(EventType.ADVERT_CREATED)
                     .fundingOrganisationId(2L)
@@ -176,7 +176,7 @@ class EventLogRepositoryTest {
 
             when(mockedPreparedStatement.executeUpdate()).thenThrow(SQLException.class);
 
-            assertThrows(DatabaseQueryException.class, () -> eventLogRepository.save(expectedEventLog));
+            assertThrows(DatabaseQueryException.class, () -> eventLogRepository.saveNewEventLog(expectedEventLog));
 
             //verifying query params are all correct and in the right position
             verify(mockedPreparedStatement).setString(eq(1), eq(expectedEventLog.getUserSub()));

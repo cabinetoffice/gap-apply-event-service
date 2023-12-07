@@ -1,4 +1,4 @@
-package gov.cabinetoffice.eventservice.config;
+package gov.cabinetoffice.shared.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

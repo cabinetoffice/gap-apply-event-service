@@ -1,4 +1,4 @@
-package gov.cabinetoffice.eventservice.handler;
+package gov.cabinetoffice.timetocomplete.handler;
 
 import com.amazonaws.services.lambda.runtime.events.SQSEvent;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -7,6 +7,7 @@ import gov.cabinetoffice.shared.config.ObjectMapperConfig;
 import gov.cabinetoffice.shared.dto.EventLogDto;
 import gov.cabinetoffice.shared.enums.EventType;
 import gov.cabinetoffice.shared.enums.ObjectType;
+import gov.cabinetoffice.timetocomplete.service.CalculationsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -24,19 +25,19 @@ import java.util.List;
  * AWS_ACCESS_KEY_ID=[your own access key id]
  * AWS_SECRET_ACCESS_KEY=[your own secret access key]
  *
- * Then uncomment the @Test annotation
+ * Then remove the @Disabled annotation
  *
  */
 @ExtendWith(MockitoExtension.class)
-class EventServiceHandlerIntegrationTest {
+class CalculationsHandlerIntegrationTest {
 
-    private EventServiceHandler handler;
+    private CalculationsHandler handler;
     private ObjectMapper objectMapper;
 
     @BeforeEach
     void setUp() {
         objectMapper = new ObjectMapperConfig().getObjectMapper();
-        handler = new EventServiceHandler();
+        handler = new CalculationsHandler();
     }
 
     @Test

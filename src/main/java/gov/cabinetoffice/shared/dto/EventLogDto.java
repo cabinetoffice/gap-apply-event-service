@@ -1,4 +1,4 @@
-package gov.cabinetoffice.shared.entity;
+package gov.cabinetoffice.shared.dto;
 
 import gov.cabinetoffice.shared.enums.EventType;
 import gov.cabinetoffice.shared.enums.ObjectType;
@@ -13,9 +13,8 @@ import java.time.Instant;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class EventLog {
+public class EventLogDto {
 
-    long id;
     String userSub;
     Long fundingOrganisationId;
     String sessionId;
@@ -23,5 +22,4 @@ public class EventLog {
     String objectId;
     ObjectType objectType;
     Instant timestamp;
-    Instant created;
 }
