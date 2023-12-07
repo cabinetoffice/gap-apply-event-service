@@ -1,4 +1,4 @@
-package gov.cabinetoffice;
+package gov.cabinetoffice.shared.config;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
