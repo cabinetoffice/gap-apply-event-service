@@ -23,7 +23,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class CalculationsServiceTest {
+class CompletionStatisticsServiceTest {
 
 
 
@@ -33,7 +33,7 @@ class CalculationsServiceTest {
     @Mock
     private CompletionStatisticsRepository completionStatisticsRepository;
 
-    private CalculationsService calculationsService;
+    private CompletionStatisticsService completionStatisticsService;
 
     @Captor
     private ArgumentCaptor<CompletionStatisticsDto> completionStatisticsArgumentCaptor;
@@ -41,7 +41,7 @@ class CalculationsServiceTest {
     @BeforeEach
     void setUp() {
 
-        calculationsService = new CalculationsService(eventLogRepository, completionStatisticsRepository);
+        completionStatisticsService = new CompletionStatisticsService(eventLogRepository, completionStatisticsRepository);
 
     }
 
@@ -110,7 +110,7 @@ class CalculationsServiceTest {
             when(eventLogRepository.getUnactionedPublishedEventLogs()).thenReturn(publishedEventLogs);
             when(eventLogRepository.getEventLogsByObjectId(objectId)).thenReturn(logsForObject);
 
-            calculationsService.calculateCompletionStatistics();
+            completionStatisticsService.calculateCompletionStatistics();
 
             verify(completionStatisticsRepository).saveNewCompletionStatistic(completionStatisticsArgumentCaptor.capture());
 
@@ -197,7 +197,7 @@ class CalculationsServiceTest {
             when(eventLogRepository.getEventLogsByObjectId(objectId2)).thenReturn(logsForObject2);
             when(eventLogRepository.getEventLogsByObjectId(objectId3)).thenReturn(logsForObject3);
 
-            calculationsService.calculateCompletionStatistics();
+            completionStatisticsService.calculateCompletionStatistics();
 
             verify(completionStatisticsRepository, times(3)).saveNewCompletionStatistic(completionStatisticsArgumentCaptor.capture());
 

@@ -11,7 +11,7 @@ import gov.cabinetoffice.shared.config.SecretsManagerConfig;
 import gov.cabinetoffice.shared.exceptions.MessageProcessingException;
 import gov.cabinetoffice.shared.repository.EventLogRepository;
 import gov.cabinetoffice.timetocomplete.repository.CompletionStatisticsRepository;
-import gov.cabinetoffice.timetocomplete.service.CalculationsService;
+import gov.cabinetoffice.timetocomplete.service.CompletionStatisticsService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +21,7 @@ import java.time.Clock;
 
 @RequiredArgsConstructor
 @Service
-public class CalculationsHandler implements RequestHandler<SQSEvent, Void> {
+public class CompletionStatisticsHandler implements RequestHandler<SQSEvent, Void> {
 
     private final Logger logger = LoggerFactory.getLogger(EventServiceHandler.class);
 
@@ -31,19 +31,19 @@ public class CalculationsHandler implements RequestHandler<SQSEvent, Void> {
 
     private final EventLogRepository eventLogRepository;
 
-    private final CalculationsService calculationsService;
+    private final CompletionStatisticsService completionStatisticsService;
 
     private final ObjectMapper objectMapper;
 
     private final Clock clock;
 
-    public CalculationsHandler () {
+    public CompletionStatisticsHandler() {
         objectMapper = new ObjectMapperConfig().getObjectMapper();
         clock = Clock.systemDefaultZone();
         secretsManagerService = new SecretsManagerService(System.getenv("DB_CREDS_SECRET_ARN"), SecretsManagerConfig.getAwsSecretsManager(), objectMapper);
         eventLogRepository = new EventLogRepository(secretsManagerService, clock);
         completionStatisticsRepository = new CompletionStatisticsRepository(secretsManagerService, clock);
-        calculationsService = new CalculationsService(eventLogRepository, completionStatisticsRepository );
+        completionStatisticsService = new CompletionStatisticsService(eventLogRepository, completionStatisticsRepository );
     }
 
     @Override
@@ -53,7 +53,7 @@ public class CalculationsHandler implements RequestHandler<SQSEvent, Void> {
             message.getRecords().forEach(record -> {
                 logger.debug("Message Body : {}", record.getBody());
 
-                    calculationsService.calculateCompletionStatistics();
+                    completionStatisticsService.calculateCompletionStatistics();
 
 
             });

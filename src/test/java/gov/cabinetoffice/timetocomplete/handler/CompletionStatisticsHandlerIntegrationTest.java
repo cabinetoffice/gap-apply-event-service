@@ -7,7 +7,6 @@ import gov.cabinetoffice.shared.config.ObjectMapperConfig;
 import gov.cabinetoffice.shared.dto.EventLogDto;
 import gov.cabinetoffice.shared.enums.EventType;
 import gov.cabinetoffice.shared.enums.ObjectType;
-import gov.cabinetoffice.timetocomplete.service.CalculationsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -29,15 +28,15 @@ import java.util.List;
  *
  */
 @ExtendWith(MockitoExtension.class)
-class CalculationsHandlerIntegrationTest {
+class CompletionStatisticsHandlerIntegrationTest {
 
-    private CalculationsHandler handler;
+    private CompletionStatisticsHandler handler;
     private ObjectMapper objectMapper;
 
     @BeforeEach
     void setUp() {
         objectMapper = new ObjectMapperConfig().getObjectMapper();
-        handler = new CalculationsHandler();
+        handler = new CompletionStatisticsHandler();
     }
 
     @Test

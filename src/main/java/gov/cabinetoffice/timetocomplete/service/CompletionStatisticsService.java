@@ -17,13 +17,13 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
-public class CalculationsService {
+public class CompletionStatisticsService {
 
     private final EventLogRepository eventLogRepository;
 
     private final CompletionStatisticsRepository completionStatisticsRepository;
 
-    private static final Logger logger = LoggerFactory.getLogger(CalculationsService.class);
+    private static final Logger logger = LoggerFactory.getLogger(CompletionStatisticsService.class);
 
     public void calculateCompletionStatistics () {
 
@@ -78,7 +78,7 @@ public class CalculationsService {
     /**
      * We pass a subset of objects with the same sessionId and calculate the ime between the first and last events
      *
-     * @param eventLogsForObject
+     * @param eventLogsForObject The event logs to calculate length of session
      *
      * @return Total time for the events in the session.
      */
