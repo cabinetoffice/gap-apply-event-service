@@ -1,6 +1,5 @@
-package gov.cabinetoffice.shared.entity;
+package gov.cabinetoffice.timetocomplete.dto;
 
-import gov.cabinetoffice.shared.enums.EventType;
 import gov.cabinetoffice.shared.enums.ObjectType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,15 +12,20 @@ import java.time.Instant;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class EventLog {
+public class CompletionStatisticsDto {
 
-    long id;
     String userSub;
     Long fundingOrganisationId;
-    String sessionId;
-    EventType eventType;
     String objectId;
     ObjectType objectType;
-    Instant timestamp;
+    long totalAliveTime;
+    long timeWorkedOn;
+    Instant objectCompleted;
     Instant created;
+
+    public long getTimeWorkedOnInMinutes (){
+        return timeWorkedOn / 1000 / 60;
+    }
+
+
 }

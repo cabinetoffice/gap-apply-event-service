@@ -1,4 +1,4 @@
-package gov.cabinetoffice.eventservice.config;
+package gov.cabinetoffice.shared.config;
 
 import com.amazonaws.services.secretsmanager.AWSSecretsManager;
 import com.amazonaws.services.secretsmanager.AWSSecretsManagerClientBuilder;

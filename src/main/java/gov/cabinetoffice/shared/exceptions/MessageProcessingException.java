@@ -1,4 +1,4 @@
-package gov.cabinetoffice.eventservice.exceptions;
+package gov.cabinetoffice.shared.exceptions;
 
 public class MessageProcessingException extends RuntimeException {
 

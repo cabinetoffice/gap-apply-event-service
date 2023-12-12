@@ -5,7 +5,7 @@ import com.amazonaws.services.secretsmanager.model.GetSecretValueRequest;
 import com.amazonaws.services.secretsmanager.model.GetSecretValueResult;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gov.cabinetoffice.eventservice.exceptions.JsonException;
+import gov.cabinetoffice.shared.exceptions.JsonException;
 import gov.cabinetoffice.shared.dto.DatabaseCredentialsSecret;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -79,13 +79,10 @@ class SecretsManagerServiceTest {
         @Test
         void secretsManagerClientThrowsException() {
 
-            DatabaseCredentialsSecret secret = DatabaseCredentialsSecret.builder().build();
-
             when(secretsManagerClient.getSecretValue(any(GetSecretValueRequest.class)))
                     .thenThrow(mockedSecretsManagerException);
             when(mockedSecretsManagerException.awsErrorDetails()).thenReturn(mockedAwsErrorDetails);
             when(mockedAwsErrorDetails.errorMessage()).thenReturn("Error message");
-
 
             assertThrows(SecretsManagerException.class, () -> secretsManagerService.getDatabaseCredentialsSecret());
 
@@ -94,8 +91,6 @@ class SecretsManagerServiceTest {
 
         @Test
         void jsonProcessingException() throws JsonProcessingException {
-
-            DatabaseCredentialsSecret secret = DatabaseCredentialsSecret.builder().build();
 
             when(secretsManagerClient.getSecretValue(any(GetSecretValueRequest.class)))
                     .thenReturn(mockedSecretValueResponse);

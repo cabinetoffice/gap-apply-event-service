@@ -1,6 +1,6 @@
 package gov.cabinetoffice.eventservice.service;
 
-import gov.cabinetoffice.shared.entity.EventLog;
+import gov.cabinetoffice.shared.dto.EventLogDto;
 import gov.cabinetoffice.shared.enums.EventType;
 import gov.cabinetoffice.shared.enums.ObjectType;
 import gov.cabinetoffice.shared.repository.EventLogRepository;
@@ -24,7 +24,7 @@ class EventLogServiceTest {
     private EventLogService eventLogService;
 
     @Captor
-    private ArgumentCaptor<EventLog> eventLogCaptor;
+    private ArgumentCaptor<EventLogDto> eventLogCaptor;
 
     @BeforeEach
     void setUp() {
@@ -34,7 +34,7 @@ class EventLogServiceTest {
     @Test
     void save() {
 
-        EventLog expectedEventLog = EventLog.builder()
+        EventLogDto expectedEventLog = EventLogDto.builder()
                 .userSub("USER_SUB")
                 .sessionId("SESSION_ID")
                 .objectId("1")
@@ -44,9 +44,9 @@ class EventLogServiceTest {
                 .build();
 
         eventLogService.save(expectedEventLog);
-        verify(eventLogRepository).save(eventLogCaptor.capture());
+        verify(eventLogRepository).saveNewEventLog(eventLogCaptor.capture());
 
-        EventLog actualEventLog = eventLogCaptor.getValue();
+        EventLogDto actualEventLog = eventLogCaptor.getValue();
 
         assertEquals(expectedEventLog, actualEventLog);
 
