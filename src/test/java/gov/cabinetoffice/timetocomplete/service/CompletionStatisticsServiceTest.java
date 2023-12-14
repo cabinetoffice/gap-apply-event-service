@@ -66,16 +66,7 @@ class CompletionStatisticsServiceTest {
             String userSub = "USER_SUB";
 
 
-            List<EventLog> publishedEventLogs = List.of(EventLog.builder()
-                            .objectId(objectId)
-                            .timestamp(timestamp)
-                            .created(timestamp)
-                            .objectType(objectType)
-                            .sessionId(sessionIdThird)
-                            .eventType(eventType)
-                            .fundingOrganisationId(fundingOrgId)
-                            .userSub(userSub)
-                    .build());
+            List<String> publishedEventLogs = List.of(objectId);
             //User has logged in and created an advert
             EventLog event1 = generateEvent(timestamp.minus(40, ChronoUnit.MINUTES),
                     sessionIdFirst, objectId, objectType, EventType.ADVERT_CREATED, userSub, fundingOrgId);
@@ -144,16 +135,8 @@ class CompletionStatisticsServiceTest {
             String userSub = "USER_SUB";
 
 
-            List<EventLog> publishedEventLogs = List.of(
-                    generateEvent(timestamp1, sessionIdFirst, objectId1,
-                            objectType, EventType.ADVERT_PUBLISHED, userSub, fundingOrgId ),
-                    generateEvent(timestamp2, sessionIdSecond, objectId2,
-                            objectType, EventType.APPLICATION_PUBLISHED, userSub, fundingOrgId ),
-                    generateEvent(timestamp3, sessionIdThird, objectId3,
-                            objectType, EventType.SUBMISSION_PUBLISHED, userSub, fundingOrgId )
+            List<String> publishedEventLogs = List.of(objectId1, objectId2, objectId3);
 
-
-            );
             //User has logged in and created an advert
             EventLog object1_event1 = generateEvent(timestamp1.minus(13, ChronoUnit.MINUTES),
                     sessionIdFirst, objectId1, objectType, EventType.ADVERT_CREATED, userSub, fundingOrgId);

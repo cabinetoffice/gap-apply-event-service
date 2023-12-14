@@ -23,9 +23,12 @@ public class CompletionStatisticsRepository extends BaseEventStreamRepository {
         super(secretsManagerService, clock);
     }
 
-    private static final String INSERT_COMPLETION_STATISTICS_SQL = "INSERT INTO COMPLETION_STATISTICS \n" +
+    private static final String INSERT_COMPLETION_STATISTICS_SQL = "INSERT INTO event_stream.COMPLETION_STATISTICS \n" +
             "( id, user_sub, funding_organisation_id, object_id, object_type, total_alive_time, time_worked_on, object_completed, created ) \n" +
             "values (nextval('COMPLETION_STATISTICS_ID_SEQ'),?,?,?,?,?,?,?,? );";
+
+    private static final String DELETE_PREVIOUS_STATISTICS_SQL = "DELETE FROM event_stream.COMPLETION_STATISTICS \n" +
+            " where object_id = ?";
 
 
     public void saveNewCompletionStatistic(CompletionStatisticsDto completionStatistics) {
@@ -59,6 +62,29 @@ public class CompletionStatisticsRepository extends BaseEventStreamRepository {
 
     }
 
+    public void deleteStatisticsForObjectId(String objectId){
+        String jdbcUrl = buildDbUrl();
+        try (Connection conn = DriverManager.getConnection(
+                buildDbUrl(),
+                secretsManagerService.getDatabaseCredentialsSecret().getUsername(),
+                secretsManagerService.getDatabaseCredentialsSecret().getPassword())) {
+            validateConnection(jdbcUrl, conn);
+            logger.debug("Database connection established");
+
+            PreparedStatement deleteStatement = conn.prepareStatement(DELETE_PREVIOUS_STATISTICS_SQL);
+
+            deleteStatement.setString(1, objectId);
+
+            logger.debug("Deleting previous statistics for object {}", objectId);
+            int numberDeleted = deleteStatement.executeUpdate();
+
+            logger.debug("Deleted {} logs for object {}", numberDeleted, objectId);
+
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            throw new DatabaseQueryException(e.getMessage());
+        }
+    }
 
 
 

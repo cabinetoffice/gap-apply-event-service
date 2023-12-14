@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.*;
 import java.time.Clock;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -23,7 +24,7 @@ public class EventLogRepository extends BaseEventStreamRepository {
     private static final Logger logger = LoggerFactory.getLogger(EventLogRepository.class);
 
 
-    private static final String GET_UNACTIONED_PUBLISHED_LOGS_SQL = "SELECT * FROM event_stream.event_log \n" +
+    private static final String GET_UNACTIONED_PUBLISHED_LOGS_OBJECT_ID_SQL = "SELECT distinct(object_id) FROM event_stream.event_log \n" +
             "where actioned = false and event_type in (?, ?, ?);";
 
     private static final String GET_EVENT_LOGS_BY_OBJECT_ID_SQL = "SELECT * FROM event_stream.event_log \n" +
@@ -39,18 +40,18 @@ public class EventLogRepository extends BaseEventStreamRepository {
         super(secretsManagerService, clock);
     }
 
-    public List<EventLog> getUnactionedPublishedEventLogs() {
+    public List<String> getUnactionedPublishedEventLogs() {
 
         String jdbcUrl = buildDbUrl();
         try (Connection conn = DriverManager.getConnection(
-                buildDbUrl(),
+                jdbcUrl,
                 secretsManagerService.getDatabaseCredentialsSecret().getUsername(),
                 secretsManagerService.getDatabaseCredentialsSecret().getPassword())
         ) {
             validateConnection(jdbcUrl, conn);
             logger.debug("Database connection established");
 
-            PreparedStatement selectStatement = conn.prepareStatement(GET_UNACTIONED_PUBLISHED_LOGS_SQL);
+            PreparedStatement selectStatement = conn.prepareStatement(GET_UNACTIONED_PUBLISHED_LOGS_OBJECT_ID_SQL);
 
             selectStatement.setString(1, EventType.ADVERT_PUBLISHED.toString());
             selectStatement.setString(2, EventType.APPLICATION_PUBLISHED.toString());
@@ -58,7 +59,13 @@ public class EventLogRepository extends BaseEventStreamRepository {
 
             ResultSet results = selectStatement.executeQuery();
 
-            return EventLogRowMapper.map(results);
+            List<String> objectIds = new ArrayList<>();
+
+            while (results.next()) {
+                objectIds.add(results.getString("object_id"));
+            }
+
+            return objectIds;
 
 
         } catch (SQLException e) {
@@ -84,6 +91,8 @@ public class EventLogRepository extends BaseEventStreamRepository {
             selectStatement.setString(1, objectId);
 
             ResultSet results = selectStatement.executeQuery();
+
+
 
             return EventLogRowMapper.map(results);
 
