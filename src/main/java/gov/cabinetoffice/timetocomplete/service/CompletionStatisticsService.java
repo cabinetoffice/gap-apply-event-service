@@ -27,52 +27,59 @@ public class CompletionStatisticsService {
 
     public void calculateCompletionStatistics () {
 
-        List<EventLog> publishedEventLogs = eventLogRepository.getUnactionedPublishedEventLogs();
+        List<String> publishedEventLogs = eventLogRepository.getUnactionedPublishedEventLogs();
 
-        publishedEventLogs.forEach(publishedObject -> {
+        publishedEventLogs.forEach(publishedObjectId -> {
 
             try{
 
-            CompletionStatisticsDto completionStatisticsDto = CompletionStatisticsDto.builder()
-                    .objectCompleted(publishedObject.getTimestamp())
-                    .fundingOrganisationId(publishedObject.getFundingOrganisationId())
-                    .userSub(publishedObject.getUserSub())
-                    .objectId(publishedObject.getObjectId())
-                    .objectType(publishedObject.getObjectType())
-                    .build();
+                AtomicLong timeWorkedOn = new AtomicLong(0);
+
+                List<EventLog> eventLogsForObject =  eventLogRepository.getEventLogsByObjectId(publishedObjectId);
+
+                CompletionStatisticsDto completionStatisticsDto = buildCompletionStatisticsDto(eventLogsForObject);
+
+                completionStatisticsDto.setTotalAliveTime(getTotalTimeAliveForObject(eventLogsForObject));
+
+                //for each session id, get time in session and add to timeWorkedOn
+                eventLogsForObject.stream().map(EventLog::getSessionId).distinct()
+                        .forEach(sessionId ->
+                                timeWorkedOn.addAndGet(getTimeWorkedOnForEvents(eventLogsForObject.stream()
+                                    .filter(x -> x.getSessionId().equals(sessionId)).collect(Collectors.toList())))
+                        );
+
+                completionStatisticsDto.setTimeWorkedOn(timeWorkedOn.get());
+
+                logger.debug("Time in total for object {} : {}ms, {} minutes",
+                        completionStatisticsDto.getObjectId(),
+                        completionStatisticsDto.getTimeWorkedOn(),
+                        completionStatisticsDto.getTimeWorkedOnInMinutes());
 
 
-            AtomicLong timeWorkedOn = new AtomicLong(0);
+                completionStatisticsRepository.deleteStatisticsForObjectId(publishedObjectId);
 
-            List<EventLog> eventLogsForObject =  eventLogRepository.getEventLogsByObjectId(publishedObject.getObjectId());
-
-            completionStatisticsDto.setTotalAliveTime(getTotalTimeAliveForObject(eventLogsForObject));
-
-            //for each session id, get time in session and add to timeWorkedOn
-
-            eventLogsForObject.stream().map(EventLog::getSessionId).distinct()
-                    .forEach(sessionId ->
-                            timeWorkedOn.addAndGet(getTimeWorkedOnForEvents(eventLogsForObject.stream()
-                                .filter(x -> x.getSessionId().equals(sessionId)).collect(Collectors.toList())))
-                    );
-
-            completionStatisticsDto.setTimeWorkedOn(timeWorkedOn.get());
-
-            logger.debug("Time in total for object {} : {}ms, {} minutes",
-                    completionStatisticsDto.getObjectId(),
-                    completionStatisticsDto.getTimeWorkedOn(),
-                    completionStatisticsDto.getTimeWorkedOnInMinutes());
-
-            logger.debug("Saving new completion statistics : {}", completionStatisticsDto);
-            completionStatisticsRepository.saveNewCompletionStatistic(completionStatisticsDto);
-            eventLogRepository.markLogsAsActionedForObjectId(completionStatisticsDto.getObjectId());
+                logger.debug("Saving new completion statistics : {}", completionStatisticsDto);
+                completionStatisticsRepository.saveNewCompletionStatistic(completionStatisticsDto);
+                eventLogRepository.markLogsAsActionedForObjectId(completionStatisticsDto.getObjectId());
 
             } catch(Exception e){
-                logger.error("Error calculating statistics for object {}. Skipping.", publishedObject.getObjectId());
+                logger.error("Error calculating statistics for object {}. Skipping.", publishedObjectId);
             }
 
         });
 
+    }
+
+    private CompletionStatisticsDto buildCompletionStatisticsDto(List<EventLog> eventLogsForObject) {
+        EventLog publishedObject = eventLogsForObject.get(eventLogsForObject.size()-1);
+
+        return CompletionStatisticsDto.builder()
+                .objectCompleted(publishedObject.getTimestamp())
+                .fundingOrganisationId(publishedObject.getFundingOrganisationId())
+                .userSub(publishedObject.getUserSub())
+                .objectId(publishedObject.getObjectId())
+                .objectType(publishedObject.getObjectType())
+                .build();
     }
 
     /**
