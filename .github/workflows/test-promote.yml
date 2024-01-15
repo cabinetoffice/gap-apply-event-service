@@ -1,0 +1,59 @@
+name: Java CI with Maven
+
+on:
+  push:
+    branches:
+      - TMI-531/**
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: aws-actions/configure-aws-credentials@v3
+        name: Configure AWS credentials
+        with:
+          role-to-assume: arn:aws:iam::801347364784:role/github-gap-apply-event-service-sandbox
+          role-session-name: github-gap-apply-event-service
+          aws-region: ${{ env.AWS_REGION }}
+    
+      - uses: actions/checkout@v3
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: "17"
+          distribution: "corretto"
+          cache: maven
+      - name: Build with Maven
+        run: mvn -B package --file pom.xml
+
+      - name: DependencyCheck
+        uses: dependency-check/Dependency-Check_Action@main
+        env:
+          JAVA_HOME: /opt/jdk
+        id: DependencyCheck
+        with:
+          project: "gap-apply-event-service"
+          path: "."
+          format: "HTML"
+          args: >
+            --enableRetired
+      - name: Upload Test results
+        uses: actions/upload-artifact@master
+        with:
+          name: DependencyCheck report
+          path: ${{github.workspace}}/reports
+          
+      - name: Login to AWS ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Add temp tag to existing sandbox image
+        # Based on steps described here - https://docs.aws.amazon.com/AmazonECR/latest/userguide/image-retag.html
+        run: |
+          MANIFEST=$(aws ecr batch-get-image --repository-name ${{ env.ECR_REPO_NAME }} --image-ids imageTag=develop --output json | jq --raw-output --join-output '.images[0].imageManifest')
+          aws ecr put-image --repository-name ${{ env.ECR_REPO_NAME }} --image-tag this-test-worked --image-manifest "$MANIFEST"
+        
+
+
+          
